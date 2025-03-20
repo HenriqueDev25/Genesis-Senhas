@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Senhas Gênesis</title>
+    <style>
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #00041a, #011050);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+
+        .container {
+            max-width: 400px;
+            width: 100%;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo-container {
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            width: 120px; /* Ajuste o tamanho da logo conforme necessário */
+            height: auto;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #1a73e8;
+            font-weight: 600;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        .tabs button {
+            background: none;
+            border: none;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            color: #1a73e8;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .tabs button.active {
+            font-weight: bold;
+        }
+
+        .tabs button.active::after {
+            content: '';
+            display: block;
+            width: 100%;
+            height: 2px;
+            background: #1a73e8;
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            animation: underline 0.3s ease;
+        }
+
+        @keyframes underline {
+            from { transform: scaleX(0); }
+            to { transform: scaleX(1); }
+        }
+
+        .tabs button:hover {
+            opacity: 0.8;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .senha-gerada {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1a73e8;
+            margin: 1.5rem 0;
+            word-break: break-all;
+            padding: 1rem;
+            border-radius: 10px;
+            animation: pop 0.3s ease;
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0.9); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        button#gerarSenha {
+            width: 100%;
+            padding: 12px;
+            background-color: #1a73e8;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button#gerarSenha:hover {
+            background-color: #1557b0;
+            transform: translateY(-2px);
+        }
+
+        button#gerarSenha:active {
+            transform: translateY(0);
+        }
+
+        .senha-item {
+            background: #e8f0fe;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            color: #2c3e50;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .senha-item strong {
+            color: #1a73e8;
+        }
+
+        .senha-item small {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .infobox {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            text-align: center;
+            display: none;
+        }
+
+        .infobox.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .infobox.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        button#apagarHistorico {
+            width: 100%;
+            padding: 12px;
+            background-color: #dc3545;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 1rem;
+        }
+
+        button#apagarHistorico:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+        }
+
+        button#apagarHistorico:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Logo -->
+        <div class="logo-container">
+            <img src="logo.png" alt="Logo" class="logo">
+        </div>
+
+        <h1>Gerador de Senhas Gênesis</h1>
+
+        <!-- Abas -->
+        <div class="tabs">
+            <button id="tabGerar" class="active">Gerar Senha</button>
+            <button id="tabSenhas">Senhas Salvas</button>
+        </div>
+
+        <!-- Conteúdo da aba "Gerar Senha" -->
+        <div id="conteudoGerar" class="tab-content active">
+            <button id="gerarSenha">Gerar Senha</button>
+            <span id="senha" class="senha-gerada"></span>
+        </div>
+
+        <!-- Conteúdo da aba "Senhas Salvas" -->
+        <div id="conteudoSenhas" class="tab-content">
+            <div id="senhasSalvas"></div>
+            <button id="apagarHistorico">Apagar Histórico</button>
+        </div>
+    </div>
+
+    <script>
+        // Função para alternar entre as abas
+        document.getElementById('tabGerar').addEventListener('click', function() {
+            document.getElementById('conteudoGerar').classList.add('active');
+            document.getElementById('conteudoSenhas').classList.remove('active');
+            document.getElementById('tabGerar').classList.add('active');
+            document.getElementById('tabSenhas').classList.remove('active');
+        });
+
+        document.getElementById('tabSenhas').addEventListener('click', function() {
+            document.getElementById('conteudoSenhas').classList.add('active');
+            document.getElementById('conteudoGerar').classList.remove('active');
+            document.getElementById('tabSenhas').classList.add('active');
+            document.getElementById('tabGerar').classList.remove('active');
+            carregarSenhasSalvas(); // Atualiza a lista de senhas ao abrir a aba
+        });
+
+        // Função para gerar uma senha segura
+        function gerarSenhaSegura(tamanho) {
+            const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+            let senha = '';
+            for (let i = 0; i < tamanho; i++) {
+                senha += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+            }
+            return senha;
+        }
+
+        // Função para salvar a senha no localStorage
+        function salvarSenha(senha) {
+            const dataHora = new Date().toLocaleString();
+            const senhaData = {
+                senha: senha,
+                dataHora: dataHora
+            };
+
+            // Recupera as senhas salvas ou inicializa um array vazio
+            const senhasSalvas = JSON.parse(localStorage.getItem('senhas')) || [];
+            senhasSalvas.push(senhaData);
+
+            // Salva no localStorage
+            localStorage.setItem('senhas', JSON.stringify(senhasSalvas));
+        }
+
+        // Evento para gerar e exibir a senha
+        document.getElementById('gerarSenha').addEventListener('click', function() {
+            const senha = gerarSenhaSegura(12);
+            document.getElementById('senha').textContent = senha;
+
+            // Salva a senha no localStorage
+            salvarSenha(senha);
+        });
+
+        // Função para carregar e exibir as senhas salvas
+        function carregarSenhasSalvas() {
+            const senhasSalvas = JSON.parse(localStorage.getItem('senhas')) || [];
+            const container = document.getElementById('senhasSalvas');
+
+            if (senhasSalvas.length === 0) {
+                container.innerHTML = "<p>Nenhuma senha salva ainda.</p>";
+            } else {
+                let html = '';
+                senhasSalvas.forEach((item, index) => {
+                    html += `
+                        <div class="senha-item">
+                            <strong>Senha ${index + 1}:</strong> ${item.senha} <br>
+                            <small>Data/Hora: ${item.dataHora}</small>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            }
+        }
+
+        // Função para apagar o histórico de senhas
+        document.getElementById('apagarHistorico').addEventListener('click', function() {
+            localStorage.removeItem('senhas');
+            carregarSenhasSalvas(); // Atualiza a lista após apagar
+        });
+    </script>
+</body>
+</html>
